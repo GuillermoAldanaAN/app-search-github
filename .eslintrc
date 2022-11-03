@@ -1,10 +1,7 @@
 {
     "extends": [
         "react-app",
-        "standard",
-        "plugin:react/recommended",
-        "prettier",
-        "prettier/react",
+        "plugin:jsx-a11y/recommended",
         "eslint-config-prettier"
     ],
     "plugins": [
