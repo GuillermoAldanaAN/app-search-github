@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Container, Grid, Button, TextField, Typography, Box } from '@mui/material'
+import { Container, Grid, Button, TextField, Typography, Box } from '@mui/material';
+import Content from "../Content";
+
 const GithubSearchPage = () => {
     const [isSearching, setIsSearching] = useState(false);
     const [isSearchApplied, setIsSearchApplied] = useState(false);
@@ -9,33 +11,13 @@ const GithubSearchPage = () => {
         setIsSearchApplied(true);
         setIsSearching(false);
     }
-    const renderContent = () => {
-        return isSearchApplied ?
-            (
-            <table>
-                <thead>
-                    <tr>
-                        <th>Repository</th>
-                        <th>stars</th>
-                        <th>forks</th>
-                        <th>open issues</th>
-                        <th>updated at</th>
-                    </tr>
-                </thead>
-            </table>
-            ) :
-            (
-            <Box display='flex' alignItems={'center'} justifyContent='center' height={'400px'}>
-                <Typography variant="h6" color="initial">
-                    Please provide a search option and click in the search button
-                </Typography>
-            </Box>
-            )
 
-    }
     return (
         <Container>
-            <Typography variant="h4" component={'h2'}>Github repositories list</Typography>
+            <Box my={4}>
+                <Typography variant="h4" component={'h2'}>Github repositories list</Typography>
+
+            </Box>
             <Grid container spacing={2} justifyContent="space-between">
                 <Grid item md={6} xs={12}>
                     <TextField
@@ -51,7 +33,10 @@ const GithubSearchPage = () => {
                     </Button>
                 </Grid>
             </Grid>
-            {renderContent()}
+            <Box my={2}>
+                <Content isSearchApplied={isSearchApplied} />
+            </Box>
+
         </Container>
     );
 }
