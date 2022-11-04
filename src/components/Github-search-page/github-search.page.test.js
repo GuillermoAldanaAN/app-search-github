@@ -87,4 +87,29 @@ describe("When the developer does a search", () => {
         await screen.findByRole('table');
         expect(screen.getByText(/1–1 of 1/i)).toBeInTheDocument();
     })
+    it(`A results size per page select/combobox with the options: 30, 50, 100. The default is 30.`, async () => {
+        fireClickSearch();
+
+        await screen.findByRole('table');
+        const caseLabelPagination = screen.getByLabelText(/rows per page/i)
+
+        fireEvent.mouseDown(caseLabelPagination)
+        const listbox = screen.getByRole('listbox', { name: /rows per page/i })
+        const options = within(listbox).getAllByRole('option')
+        const [option30, option50, option100] = options;
+
+        expect(caseLabelPagination).toBeInTheDocument();
+
+        expect(option30).toHaveTextContent(/30/)
+        expect(option50).toHaveTextContent(/50/)
+        expect(option100).toHaveTextContent(/100/)
+    })
+    it('Must exists the Next and previous pagination button', async () => {
+        fireClickSearch()
+        await screen.findByRole('table');
+        const previusPageButton = screen.getByRole('button', { name: /previous page/i })
+        expect(previusPageButton).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /next page/i })).toBeInTheDocument();
+        expect(previusPageButton).toBeDisabled();
+    })
 })
