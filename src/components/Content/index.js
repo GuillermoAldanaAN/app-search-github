@@ -9,15 +9,13 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Avatar from '@mui/material/Avatar';
 import Link from '@mui/material/Link';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import BoxMessage from './boxMessage';
 
 const tableHeaders = ['Repository', 'Stars', 'Forks', 'Open issues', 'Updated at'];
-const Content = ({ isSearchApplied }) => {
-    return (
-        isSearchApplied ?
-            (<React.Fragment>
-
+const Content = ({ isSearchApplied, repositoriesList }) => {
+    if (isSearchApplied && !!repositoriesList.length) {
+        return (
+            <React.Fragment>
                 <TableContainer>
                     <Table>
                         <TableHead>
@@ -30,18 +28,21 @@ const Content = ({ isSearchApplied }) => {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            <TableRow>
-                                <TableCell>
-                                    <Avatar alt='test' src="/logo192.png" />
-                                    <Link href="http://localhost:3000/test" underline="none">
-                                        Test
-                                    </Link>
-                                </TableCell>
-                                <TableCell>10</TableCell>
-                                <TableCell>5</TableCell>
-                                <TableCell>2</TableCell>
-                                <TableCell>2022-01-01</TableCell>
-                            </TableRow>
+                            {repositoriesList.map((item, index) =>
+                                <TableRow key={index}>
+                                    <TableCell>
+                                        <Avatar alt={item.name} src={item.owner.avatar_url} />
+                                        <Link href={item.html_ur} underline="none">
+                                            {item.name}
+                                        </Link>
+                                    </TableCell>
+                                    <TableCell>{item.stargazers_count}</TableCell>
+                                    <TableCell>{item.forks_count}</TableCell>
+                                    <TableCell>{item.open_issues_count}</TableCell>
+                                    <TableCell>{item.updated_at}</TableCell>
+                                </TableRow>
+                            )}
+
                         </TableBody>
                     </Table>
                 </TableContainer>
@@ -55,19 +56,22 @@ const Content = ({ isSearchApplied }) => {
                     onRowsPerPageChange={() => { }}
                 />
             </React.Fragment>
-            ) :
-            (
-                <Box display='flex' alignItems={'center'} justifyContent='center' height={'400px'}>
-                    <Typography variant="h6" color="initial">
-                        Please provide a search option and click in the search button
-                    </Typography>
-                </Box>
-            )
+        )
+    }
+    if (isSearchApplied && !repositoriesList.length) {
+        return (
+             <BoxMessage message='You search has no results' />
+        )
+    }
+    return (
+        <BoxMessage message='Please provide a search option and click in the search button' />
+
     );
 }
 
 export default Content;
 
-Content.protTypes = {
+Content.propTypes = {
     isSearchApplied: PropTypes.bool.isRequired,
+    repositoriesList: PropTypes.arrayOf(PropTypes.object.isRequired)
 }
