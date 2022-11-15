@@ -18,6 +18,7 @@ const GithubSearchPage = () => {
     const [rowsPerPage, setRowsPerPage] = useState(ROW_PER_PAGE_DEFAULT);
     const [totalCounts, setTotalCounts] = useState(TOTAL_COUNT);
     const [isOpen, setIsOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const didMount = useRef(false)
     const searchByInput = useRef(null)
 
@@ -31,18 +32,19 @@ const GithubSearchPage = () => {
                         rowsPerPage,
                         currentPage
                     });
-                if(!response.ok){
+                if (!response.ok) {
                     throw response
                 }
                 const dataResponse = await response.json();
                 setRepositoriesList(dataResponse.items);
                 setTotalCounts(dataResponse.total_count);
                 setIsSearchApplied(true);
-                
-            } catch (error) {
-                setIsOpen(true);
 
-            }finally{
+            } catch (error) {
+                const errorJson = await error.json();
+                setIsOpen(true);
+                setErrorMessage(errorJson.message)
+            } finally {
                 setIsSearching(false);
             }
 
@@ -50,12 +52,19 @@ const GithubSearchPage = () => {
 
 
     const handleChangeRowsPerPage = (event) => {
+        setCurrentPage(CURRENT_PAGE);
         setRowsPerPage(event.target.value);
     };
     const handleChangePage = (event, newPage) => {
         setCurrentPage(newPage);
     };
-
+    const handleClickSearch = () => {
+        if (currentPage === CURRENT_PAGE) {
+            handleSearch();
+            return;
+        }
+        setCurrentPage(CURRENT_PAGE)
+    }
     useEffect(() => {
         if (!didMount.current) {
             didMount.current = true
@@ -83,7 +92,11 @@ const GithubSearchPage = () => {
                     />
                 </Grid>
                 <Grid item md={3} xs={12}>
-                    <Button variant="contained" color='primary' fullWidth disabled={isSearching} onClick={handleSearch}>
+                    <Button variant="contained"
+                        color='primary'
+                        fullWidth
+                        disabled={isSearching}
+                        onClick={handleClickSearch}>
                         Search
                     </Button>
                 </Grid>
@@ -108,7 +121,7 @@ const GithubSearchPage = () => {
                 open={isOpen}
                 autoHideDuration={6000}
                 onClose={() => setIsOpen(false)}
-                message="Validation failed"
+                message={errorMessage}
             />
         </Container>
     );
